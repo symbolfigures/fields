@@ -153,7 +153,7 @@ A 512-dimensional vector space may be conceptualized as a 3-dimensional vector s
 An initial thought is to select a set of random points in the vector space, and then make a path that passes through each one. Interpolation basically draws a straight line from one point to the next, so a series of random points will result in a zigzag sort of path, with sharp changes in direction at each point.
 
 Run `zigzag` in `generate_images.py`, passing in the number of segments and frames, and the path to the image generator checkpoint. It creates an output folder in anim/.  
-`python src/generate_images.py zigzag --segments=16 --frames=256 \`  
+`python generate_images.py zigzag --segments=16 --frames=256 \`  
     `web_dpi300_px512_2024-09-27 \`
 
 Generated images are sent to an output folder in `anim/`, using the same name as the folder in `train/`, plus a subfolder whose name is the current Unix time in seconds.
@@ -171,7 +171,7 @@ Consider a path that passes from point *A* to point *B* to point *C*. Between *A
 Now consider a path that passes through an endless series of points. For every segment between adjacent points, there are two control points. The first is determined to be opposite the second control point of the previous segment, while the second can be entirely random. More random control points can be added as well, just as long as the first one is placed with respect to the previous segment's last control point.
 
 The `bezier` function has 3 control points for each segment. It connects the last segment back to the first, so the final series of images is a loop.  
-`python src/generate_images.py bezier --segments=16 --frames=512 \`  
+`python generate_images.py bezier --segments=16 --frames=512 \`  
     `web_dpi300_px512_2024-09-27 \`
 
 ### 3.2 Process images

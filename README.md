@@ -39,10 +39,12 @@ There are three folders:
 
 The network needs a lot of data to train on, and drawing can take a long time, so it's convenient if the scanned images can be cropped, flipped, or rotated. That way the network gets more data for the same price. Drawings that are very abstract are suitable in this regard; a region may be cropped, flipped, and rotated arbitrarily without losing value. For comparison, a portrait or still life can only be flipped horizontally, and cropped only to remove the background. The former kind I call a blob, and the latter a specimen.
 
-This repository includes scans of my own drawings at 300 dpi in RGB, located in `data/scan/originals`. There you will find `third_study`, which is a kind of blob; and `second_study`, which is a kind of specimen. Pick one, copy the subfolder `dpi300_og` to the `data` folder, and give it a unique name. In this walkthrough, we will use `web` and `dilly` for third and second studies respectively, and default to `web` for operations required by both blobs and specimens.  
+If you don't have your own media and want to follow along, you can download my own drawing scans, and then move them to the `data/scan/originals` folder and unzip. ([second_study](https://symbolfigures.io/thirdstudy/data/scan/originals/secondstudy_dpi300.zip)) ([third_study](https://symbolfigures.io/thirdstudy/data/scan/originals/thirdstudy_dpi300.zip))
+
+Third Study (a.k.a. web) is a kind of blob, and Second Study (a.k.a. dilly) is a kind of specimen. Pick one, copy it to the `data` folder, and give it a unique name. In this walkthrough, we will use `web` and `dilly` for third and second studies respectively, and default to `web` for operations required by both blobs and specimens.  
 `$ cd data/scan`  
-`$ cp -r originals/third_study/dpi300_og .`  
-`$ mv dpi300_og web`
+`$ cp -r originals/thirdstudy_dpi300 .`  
+`$ mv thirdstudy_dpi300 web`
 
 ### 1.1 Prepare the drawing scans
 
@@ -109,10 +111,9 @@ Go back to `thirdstudy/`
 
 ## 2. Train the image generator
 
-The interested user can enroll in the course mentioned above to access the machine learning code. Until I meet success with my own modifications, the code won't be included here.
+The interested user can enroll in the course mentioned above to access the machine learning code. My contributions are really just pre-processing and post-processing, so the code won't be included here.
 
-For those that have the code, I've included one trained image generator `256.checkpoint` that can be used for animation. The subfolder `dpi300_px512_2024-09-27/` idenitfies which image generator is being used.  
-`$ ls train/web/dpi300_px512_2024-09-27`
+For those that have the code and want to try out the animation, you can download this pre-trained image generator ([256.checkpoint](s3://symbolfigures.io/thirdstudy/train/web_dpi300_px512_2024-09-27/256.checkpoint)) and place it in `train/web/dpi300_px512_2024-09-27/web_dpi300_px512_2024-09-27/`
 
 ### 2.1 Debug
 

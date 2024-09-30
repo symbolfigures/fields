@@ -39,7 +39,7 @@ There are three folders:
 
 The network needs a lot of data to train on, and drawing can take a long time, so it's convenient if the scanned images can be cropped, flipped, or rotated. That way the network gets more data for the same price. Drawings that are very abstract are suitable in this regard; a region may be cropped, flipped, and rotated arbitrarily without losing value. For comparison, a portrait or still life can only be flipped horizontally, and cropped only to remove the background. The former kind I call a blob, and the latter a specimen.
 
-If you don't have your own media and want to follow along, you can download my own drawing scans, and then move them to the `data/scan/originals` folder and unzip. ([second_study](https://symbolfigures.io/thirdstudy/data/scan/originals/secondstudy_dpi300.zip)) ([third_study](https://symbolfigures.io/thirdstudy/data/scan/originals/thirdstudy_dpi300.zip))
+If you don't have your own media and want to follow along, you can download my own drawing scans, and then move them to the `data/scan/originals` folder and unzip. ([second study](https://symbolfigures.io/thirdstudy/data/scan/originals/secondstudy_dpi300.zip)) ([third study](https://symbolfigures.io/thirdstudy/data/scan/originals/thirdstudy_dpi300.zip))
 
 Third Study (a.k.a. web) is a kind of blob, and Second Study (a.k.a. dilly) is a kind of specimen. Pick one, copy it to the `data` folder, and give it a unique name. In this walkthrough, we will use `web` and `dilly` for third and second studies respectively, and default to `web` for operations required by both blobs and specimens.  
 `$ cd data/scan`  
@@ -130,7 +130,7 @@ The model assumes the images are RGB while we are using grayscale, and there is 
 `rgb = conv_2d(x, 3, 1, activation=None, name=f'to_rgb_{resolution}x{resolution}')`  
 `image = tf.keras.layers.Input((input_resolution, input_resolution, 3))`
 
-For the drawings in this repository, training required a total sample count of 2^21, and 2^22 to polish out the topographical artifacts that are more visible in 1200 dpi. That is still about a quarter of the count suggested in the lectures.
+For the drawings in this repository, training required a total sample count of 2^21 to produce decent images. After 2^22 sample counts, the images looked the same, but the animations greatly improved. That is still about a quarter of the count suggested in the lectures.
 
 ## 3. Create the animation
 

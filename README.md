@@ -202,45 +202,6 @@ Use `ffmpeg` to turn a folder full of images into a video. This command converts
 
 
 
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-.  
-
-
-
-
-
-
-
-
-
 
 
 

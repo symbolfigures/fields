@@ -15,7 +15,7 @@ In `training_loop.py`, remove `count_mode='steps'`, unless using legacy Keras.
 tf.distribute.MirroredStrategy only works with legacy Keras. See [#19246](https://github.com/keras-team/keras/issues/19246).  
 `$ export TF_USE_LEGACY_KERAS=1`
 
-If you're using 2 GPUs and getting OOM errors, use one GPU for the generator, and one for the discriminator. In `training_loop.py` where the `generator.optimizer` variable is set, put that line within a `with tf.device('/GPU:0):` block. Similarly for the discriminator, using `GPU:1`. This does not require MirroredStrategy.
+If you're using 2 GPUs and getting OOM errors, use one GPU for the generator, and one for the discriminator. In `training_loop.py` where the `generator.optimizer` variable is set, put that line within a `with tf.device('/GPU:0):` block. Similarly for the discriminator, using `GPU:1`.
 
 The model assumes the images are RGB, which have 3 channels. Grayscale images have only 1, so in `models.py`, change `3` to `1` in the following lines:  
 `rgb = conv_2d(x, 3, 1, activation=None, name=f'to_rgb_{resolution}x{resolution}')`  

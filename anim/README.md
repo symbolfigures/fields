@@ -4,7 +4,7 @@ First, we pass a series of vectors to the image generator, and for every vector 
 
 ### 1. Generate images
 
-Enter `anim`.
+Enter `anim`.  
 `$ cd anim`
 
 `generate_images.py` generates the images. It's like `main_generate_images.py` from the lectures, but with my own `zigzag` and `bezier` functions. It still depends on the other scripts from the lectures to enable the image generator.
@@ -51,7 +51,7 @@ Pass in the image folder within `anim/`. Update the Unix time as needed.
 `python process_images.py --min_value=32 \`  
 	`out/web_dpi300_px512_2024-09-27/bezier_s256_f512/1727626184`
 
-Modified images are copied to a new output folder with `_c` appended to the name. 
+Modified images are copied to a new output folder with `_c` appended to the name.
 
 ### 3. Render the video
 
@@ -63,5 +63,5 @@ Use `ffmpeg` to turn a folder full of images into a video. This command converts
 	`-pix_fmt yuv420p \`  
 	`out/web_dpi300_px512_2024-09-27/bezier_s256_f512/1727626184_c.mp4`
 
-Exit `anim`
+Exit `anim`  
 `$ cd ../`

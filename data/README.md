@@ -1,6 +1,6 @@
 ## Create the dataset
 
-Enter `data`.
+Enter `data`.  
 `$ cd data`
 
 The network needs a lot of data to train on, and drawing can take a long time, so it's convenient if the scanned images can be cropped, flipped, or rotated. That way the network gets more data for the same price. Drawings that are very abstract are suitable in this regard; a region may be cropped, flipped, and rotated arbitrarily without losing value. For comparison, a portrait or still life can only be flipped horizontally, and cropped only to remove the background. The former kind I call a blob, and the latter a specimen.
@@ -25,7 +25,7 @@ If the images aren't grayscale, convert to grayscale. The drawings are colorless
 They need to be named `01.png`, `02.png`, ... for further processing.  
 `$ bash rename.sh web`
 
-Exit `scan`
+Exit `scan`  
 `$ cd ../`
 
 ### 2. Cut lots of tiles
@@ -38,10 +38,10 @@ Every drawing in a blob is like a block of clay that can be cut this way and tha
 
 It creates a `grid` folder with images inside. These are the same scans with a grid superimposed. Each cell of the grid covers 256/300 square inches, and is scaled depending on dpi. The default grid size is 12 x 18 cells.
 
-Run `grid` with `-h` to see all the available parameters.
+Run `grid` with `-h` to see all the available parameters.  
 `$ python tile.py grid -h`
 
-Run `grid`, and pass in the dpi and input directory. Review each page and see if any of the grids need to be shifted up, down, left or right.
+Run `grid`, and pass in the dpi and input directory. Review each page and see if any of the grids need to be shifted up, down, left or right.  
 `$ python tile.py grid 300 web`
 
 The `adj_xy.json` file contains adjustments for each page, which you may edit manually. It's already adjusted for the third study. The values are measured in `unit`s and indicated by page number. `adj_x` is horizontal, and `adj_y` is vertical. If you just need to adjust a single page, run `grid` again with the page number.  
@@ -74,5 +74,5 @@ A set of 43 drawings with 36 specimens each yields a total of 12,384 tiles (2 Gi
 The last step before training is to convert the tiles into shards, or .tfrecord files, which is the format used by the neural network. The maximum shard size has a default value of 500 MB.  
 `$ python tfrecord.py web`
 
-Exit `data`
+Exit `data`  
 `$ cd ../`

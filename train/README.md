@@ -2,7 +2,7 @@
 
 The interested user can enroll in the course mentioned to access the machine learning code.
 
-For those that have the code and want to try out the animation, you can download this pre-trained image generator ([256.checkpoint](s3://symbolfigures.io/thirdstudy/train/out/web_dpi300_px512_2024-09-27/256.checkpoint)) and place it in `train/out/web_dpi300_px512_2024-09-27/`
+For those that have the code and want to try out the animation, you can download this pre-trained image generator ([256.checkpoint](https://symbolfigures.io/thirdstudy/train/out/web_dpi300_px512_2024-09-27/256.checkpoint)) and place it in `train/out/web_dpi300_px512_2024-09-27/`
 
 ### 1. Debug
 

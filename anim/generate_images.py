@@ -1,14 +1,16 @@
 import argparse
-from checkpointer import Checkpointer
+from ..train.src.checkpointer import Checkpointer
 import os
-from save_image import save_image
-from serialize import deserialize
+from pathlib import Path
+from ..train.src.save_image import save_image
+from ..train.src.serialize import deserialize
 import tensorflow as tf
 import tensorflow_probability as tfp
 import time
-from train import TrainingState
+from ..train.src.train import TrainingState
 
 
+# as per B.K.
 def load_generator(checkpoint_folder_path: os.PathLike):
     checkpointer = Checkpointer(
         os.path.join(checkpoint_folder_path, '{checkpoint_i}.checkpoint'))
@@ -17,6 +19,7 @@ def load_generator(checkpoint_folder_path: os.PathLike):
     return training_state.visualization_generator
 
 
+# as per B.K.
 # Normalize batch of vectors.
 def normalize(v, magnitude=1.0):
     return v * magnitude / tf.sqrt(tf.reduce_sum(tf.square(v), axis=-1, keepdims=True))
@@ -25,7 +28,12 @@ def normalize(v, magnitude=1.0):
 def zigzag(
         generator: tf.keras.Model,
         args:argparse.Namespace):
-    dir_out = os.path.join('anim', args.dir_in, f'{int(time.time())}')
+
+	img_gen = Path(dir_in).leaf
+	img_type = f'bezier_s{args.segments}_f{args.frames}'
+    dir_out = os.path.join('out', img_gen, img_type, f'{int(time.time())}')
+	os.makedirs(dir_out, exist_ok=True)
+
     noise_shape = generator.input_shape[-1]
     noises = normalize(tf.random.normal((args.segments, noise_shape)))
     prog_bar = tf.keras.utils.Progbar(args.segments)
@@ -80,7 +88,11 @@ def bezier_interpolation(p0, p1, p2, p3, p4, frames):
 def bezier(
         generator: tf.keras.Model,
         args:argparse.Namespace):
-    dir_out = os.path.join('anim', args.dir_in, f'{int(time.time())}')
+
+	img_gen = Path(dir_in).leaf
+	img_type = f'bezier_s{args.segments}_f{args.frames}'
+    dir_out = os.path.join('out', img_gen, img_type, f'{int(time.time())}')
+	os.makedirs(dir_out, exist_ok=True)
 
     noise_shape = generator.input_shape[-1]
     noises = normalize(tf.random.normal((args.segments * 3, noise_shape)))
@@ -148,11 +160,11 @@ def main():
 		)
         subparser.add_argument(
 			'dir_in',
-			help='Folder of source images. Must be within train/.')
+			help='Path to image generator folder. The folder must contain a .checkpoint file.')
 
     args = parser.parse_args()
 
-    generator = load_generator(os.path.join('train', {args.dir_in}))
+    generator = load_generator(args.dir_in)
     args.action(generator, args)
 
 

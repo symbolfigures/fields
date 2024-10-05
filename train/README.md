@@ -1,6 +1,6 @@
 ## Train the image generator
 
-The interested user can enroll in the course mentioned above to access the machine learning code. My contributions are really just pre-processing and post-processing, so the code won't be included here.
+The interested user can enroll in the course mentioned to access the machine learning code. This repository is for pre-processing and post-processing, so the code isn't included here.
 
 For those that have the code and want to try out the animation, you can download this pre-trained image generator ([256.checkpoint](s3://symbolfigures.io/thirdstudy/train/out/web_dpi300_px512_2024-09-27/256.checkpoint)) and place it in `train/out/web_dpi300_px512_2024-09-27/`
 

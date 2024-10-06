@@ -59,9 +59,11 @@ def tfrecord_worker(dir_in, max_shard_size, page):
 
 
 def tfrecord(args: argparse.Namespace):
-	dir_out = f'tfrecord/{args.dir_in}'
+	if args.dir_out is None:
+		stem = Path(args.dir_in).stem
+		dir_out = f'tfrecord/{stem}'
 	os.makedirs(dir_out, exist_ok=True)
-	pages = len(os.listdir(f'tile/{args.dir_in}'))
+	pages = len(os.listdir(args.dir_in))
 	max_workers = os.cpu_count() - math.ceil(os.getloadavg()[0])
 
 	with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
@@ -92,8 +94,14 @@ def main():
 		default=500*1024*1024,
 		help='Maximum shard size in bytes.')
 	parser.add_argument(
+		'-o',
+		'--dir_out',
+		type=str,
+		default=None,
+		help='Output folder. If not specified, output is placed in tfrecord/.')
+	parser.add_argument(
 		'dir_in',
-		help='Folder of source images. Must be within tile/.')
+		help='Folder of source images. Example: "tile/web"')
 	parser.set_defaults(action=tfrecord)
 
 	args = parser.parse_args()

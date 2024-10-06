@@ -1,8 +1,3 @@
-
-# Every tile has a unique center coordinate,
-# is rotated to some random angle,and is flipped randomly.
-# The center coordinates are evenly spaced over a grid.
-
 import argparse
 import concurrent.futures
 import json
@@ -18,8 +13,8 @@ Image.MAX_IMAGE_PIXELS = None
 
 
 def grid(args: argparse.Namespace):
-	dir_in = f'scan/{args.dir_in}'
-	dir_out = f'grid/{args.dir_in}'
+	stem = Path(args.dir_in).stem
+	dir_out = f'tfrecord/{stem}'
 	os.makedirs(dir_out, exist_ok=True)
 	rows = args.rows
 	cols = args.cols
@@ -31,9 +26,9 @@ def grid(args: argparse.Namespace):
 	if args.page != None:
 		files = [f'{args.page}.png']
 	else:
-		files = os.listdir(dir_in)
+		files = os.listdir(args.dir_in)
 	for file in files:
-		file_path = Path(dir_in, file)
+		file_path = Path(args.dir_in, file)
 		page = file_path.stem
 		page_margin_x = adj_x[page] * unit
 		page_margin_y = adj_y[page] * unit
@@ -49,7 +44,7 @@ def grid(args: argparse.Namespace):
 		img.save(Path(dir_out, file_path.name))
 
 
-def blob_worker(dir_in, dpi, rw, cl, pixels, steps, page):
+def blob_worker(dir_in, dir_out, dpi, rw, cl, pixels, steps, page):
 
 	# The page is cropped into a box.
 	# The box is a 18 x 12 grid.
@@ -85,9 +80,11 @@ def blob_worker(dir_in, dpi, rw, cl, pixels, steps, page):
 	# Adjust zero padding as needed.
 	rows = math.ceil((box_bottom - box_top) / step)
 	#columns = math.ceil((box_right - box_left) / step)
-	for row in range(rows):
-		os.makedirs(f'tile/{dir_in}/p{page:02}/r{row:03}', exist_ok=True)
 
+	if dir_out is None:
+		dir_out = f'tile/{dir_in}'
+	for row in range(rows):
+		os.makedirs(f'{dir_out}/p{page:02}/r{row:03}', exist_ok=True)
 	img = Image.open(f'scan/{dir_in}/{page:02}.png')
 	row = 0
 
@@ -124,15 +121,18 @@ def blob_worker(dir_in, dpi, rw, cl, pixels, steps, page):
 			pagename = f'p{page:02}'
 			rowname = f'r{row:03}'
 			colname = f'c{col:03}'
-			target = (f'tile/{dir_in}/{pagename}/{rowname}/'+
-				f'{pagename}_{rowname}_{colname}.png')
+			target = (f'{dir_out}/{pagename}/{rowname}/'+
+					f'{pagename}_{rowname}_{colname}.png')
 			tile.save(target)
 			col += 1
 		row += 1
 
 
 def blob(args: argparse.Namespace):
-	pages = len(os.listdir(f'scan/{args.dir_in}'))
+	# Every tile has a unique center coordinate,
+	# is rotated to some random angle,and is flipped randomly.
+	# The center coordinates are evenly spaced over a grid.
+	pages = len(os.listdir(args.dir_in))
 	# CPU cores share the workload. Each core gets its own page to process.
 	# max_workers is the CPU's total logical cores minus the average load.
 	max_workers = os.cpu_count() - math.ceil(os.getloadavg()[0])
@@ -141,6 +141,7 @@ def blob(args: argparse.Namespace):
 			executor.submit(
 				blob_worker,
 				args.dir_in,
+				args.dir_out,
 				args.dpi,
 				args.rows,
 				args.cols,
@@ -157,8 +158,9 @@ def blob(args: argparse.Namespace):
 
 
 def specimen(args: argparse.Namespace):
-	input_file = f'scan/{args.dir_in}/{args.page}.png'
-	dir_out = f'tile/{args.dir_in}/p{args.page}/rf00'
+	input_file = f'{args.dir_in}/{args.page}.png'
+	stem = Path(args.dir_in).stem
+	dir_out = f'tile/{stem}/p{args.page}/rf00'
 	os.makedirs(dir_out, exist_ok=True)
 	img_num = [0]
 	img = Image.open(input_file)
@@ -231,7 +233,7 @@ def crop(event, img, page, px, dir_out, img_num):
 def rotateflip_worker(dir_in, page):
 	# Although the tiles could just be kept in one folder,
 	# the directory structure makes it easier to verify things went well
-	dir_in = f'tile/{dir_in}/p{page:02}'
+	dir_in = f'{dir_in}/p{page:02}'
 	for index in ['01', '02', '03', '10', '11', '12', '13']:
 		os.makedirs(f'{dir_in}/rf{index}', exist_ok=True)
 	for tile in [f'{i:02}' for i in range(len(os.listdir(f'{dir_in}/rf00')))]:
@@ -246,7 +248,8 @@ def rotateflip_worker(dir_in, page):
 
 
 def rotateflip(args: argparse.Namespace):
-	pages = len(os.listdir(f'tile/{args.dir_in}'))
+	assert Path(args.dir_in).parent is tile, 'For rotateflip, dir_in must be a folder within tile/.'
+	pages = len(os.listdir(f'args.dir_in'))
 	# CPU cores share the workload. Each core gets its own page to process.
 	# max_workers is the CPU's total logical cores minus the average load.
 	max_workers = os.cpu_count() - math.ceil(os.getloadavg()[0])
@@ -288,6 +291,12 @@ def main():
 	blob_parser = subparsers.add_parser(
 		'blob',
 		help='Cut tiles from a blob at random degrees of rotation.')
+	blob_parser.add_argument(
+		'-o',
+		'--dir_out',
+		type=str,
+		default=None,
+		help='Optional output folder. If not specified, output is placed in data/tile/.')
 	blob_parser.add_argument(
 		'-s',
 		'--steps',
@@ -334,7 +343,6 @@ def main():
 			choices=[4, 8, 16, 32, 64, 128, 256, 512, 1024],
 			required=True,
 			help='How many square pixels each tile will have. Must be a power of 2 between 4 and 1024.')
-
 	for subparser in [grid_parser, blob_parser, specimen_parser]:
 		subparser.add_argument(
 			'dpi',
@@ -343,7 +351,7 @@ def main():
 	for subparser in [grid_parser, blob_parser, specimen_parser, rotateflip_parser]:
 		subparser.add_argument(
 			'dir_in',
-			help='Folder of source images. Must be within scan/.')
+			help='Folder of source images. Example: "scan/web"')
 
 	args = parser.parse_args()
 	args.action(args)

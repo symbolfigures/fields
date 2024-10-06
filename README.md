@@ -37,15 +37,15 @@ There are three folders that need to be in place for the code to work:
 
 ## 1. Create the dataset
 
-See [`data/README.md`](data/README.md)
+See [`data`](data)
 
 ## 2. Train the image generator
 
-See [`train/README.md`](train/README.md)
+See [`train`](train)
 
 ## 3. Create the animation
 
-See [`anim/README.md`](anim/README.md)
+See [`anim`](anim)
 
 
 

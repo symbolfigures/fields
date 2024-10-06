@@ -25,7 +25,9 @@ Run `zigzag` in `generate_images.py`, passing in the number of segments and fram
 `python generate_images.py zigzag --segments=16 --frames=256 \`  
     `../train/out/web_dpi300_px512_2024-09-27 \`
 
-Generated images are sent to an output folder in `anim/`, using the same name as the folder in `train/`, plus a subfolder whose name is the current Unix time in seconds.
+Enter an optional parameter `--checkpoint` to specify the image generator checkpoint, otherwise the highest value is used.
+
+Generated images are sent to an output folder in `anim/out`, using the same name as the folder in `train/out` (appended with the checkpoint number if specified), and a subfolder whose name is the current Unix time in seconds.
 
 Remark: If the number of total frames extends into the tens or hundreds of thousands, avoid opening the output folder with your GUI's file manager.
 

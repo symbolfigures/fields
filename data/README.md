@@ -56,7 +56,7 @@ The `blob` function in `tile.py` produces the sample images to train on. It take
 For example, with 46 drawings at 11 x 16 inches, 300 dpi scans, 512x512 pixels per tile, and a step count of 16, `blob` cuts 1,643,166 tiles (286 GiB).  
 `$ python tile.py blob 300 scan/web --pixels=512 --steps=16`
 
-It's tempting to increase step count to generate so many images that the neural network never sees the same image twice. However, a high step count results in animations where the picture tends to spin around without the lines moving.
+Remark: It's tempting to increase step count to generate so many images that the neural network never sees the same image twice. However, a high step count results in animations where the picture tends to spin around without the lines moving.
 
 #### 2.2 Specimen
 

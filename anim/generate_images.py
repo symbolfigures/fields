@@ -9,10 +9,11 @@ from train import TrainingState
 
 
 # as per B.K.
-def load_generator(checkpoint_folder_path: os.PathLike):
+def load_generator(checkpoint_folder_path: os.PathLike, checkpoint_i):
     checkpointer = Checkpointer(
         os.path.join(checkpoint_folder_path, '{checkpoint_i}.checkpoint'))
-    checkpoint_i = max(checkpointer.list_checkpoints())
+	if checkpoint_i is None:
+	    checkpoint_i = max(checkpointer.list_checkpoints())
     training_state: TrainingState = pickle.loads(checkpointer.load_checkpoint(checkpoint_i))
     return training_state.visualization_generator
 
@@ -28,6 +29,8 @@ def zigzag(
         args:argparse.Namespace):
     img_gen = Path(args.dir_in).stem
     img_type = f'zigzag_s{args.segments}_f{args.frames}'
+	if args.checkpoint is not None:
+		img_type = f'{img_type}_c{args.checkpoint}'
     dir_out = os.path.join('out', img_gen, img_type, f'{int(time.time())}')
     os.makedirs(dir_out, exist_ok=True)
 
@@ -81,6 +84,8 @@ def bezier(
 
     img_gen = Path(args.dir_in).stem
     img_type = f'bezier_s{args.segments}_f{args.frames}'
+	if args.checkpoint is not None:
+		img_type = f'{img_type}_c{args.checkpoint}'
     dir_out = os.path.join('out', img_gen, img_type, f'{int(time.time())}')
     os.makedirs(dir_out, exist_ok=True)
 
@@ -152,12 +157,19 @@ def main():
             help='Number of frames per segment.'
         )
         subparser.add_argument(
+            '-c',
+            '--checkpoint',
+            type=int,
+            default=None,
+            help='Checkpoint within dir_in. Defaults to highest value.'
+        )
+        subparser.add_argument(
             'dir_in',
             help='Path to image generator folder. The folder must contain a .checkpoint file.')
 
     args = parser.parse_args()
 
-    generator = load_generator(args.dir_in)
+    generator = load_generator(args.dir_in, args.checkpoint)
     args.action(generator, args)
 
 

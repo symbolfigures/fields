@@ -13,7 +13,7 @@ The following is a step by step walkthrough on a Linux operating system. It assu
 ### i. Requirements
 
 - Python 3.12
-- Code from the course above and associated python libraries
+- Code from the course above
 - Other Python libraries listed in `requirements.txt`
 - bash
 - ImageMagick

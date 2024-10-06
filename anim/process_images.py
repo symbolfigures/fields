@@ -1,10 +1,7 @@
 import argparse
 from concurrent.futures import ProcessPoolExecutor
-import glob
-import imageio
 import numpy as np
 import os
-from pathlib import Path
 from PIL import Image
 
 

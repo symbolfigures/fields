@@ -18,9 +18,11 @@ def image_example(image_string, image_shape):
 	return tf.train.Example(features=tf.train.Features(feature=feature))
 
 
-def tfrecord_worker(dir_in, max_shard_size, page):
-	dir_out = f'tfrecord/{dir_in}'
-	dir_in = f'tile/{dir_in}/p{page:02}'
+def tfrecord_worker(dir_in, dir_out, max_shard_size, page):
+	if dir_out is None:
+		dir_out = f'tfrecord/{dir_in}'
+	dir_in = os.path.join(dir_in, f'p{page:02}')
+
 	img_paths = []
 	for root, dirs, files in os.walk(dir_in):
 		for file in files:
@@ -62,6 +64,8 @@ def tfrecord(args: argparse.Namespace):
 	if args.dir_out is None:
 		stem = Path(args.dir_in).stem
 		dir_out = f'tfrecord/{stem}'
+	else:
+		dir_out = args.dir_out
 	os.makedirs(dir_out, exist_ok=True)
 	pages = len(os.listdir(args.dir_in))
 	max_workers = os.cpu_count() - math.ceil(os.getloadavg()[0])
@@ -70,7 +74,8 @@ def tfrecord(args: argparse.Namespace):
 		future_to_item = {
 			executor.submit(
 				tfrecord_worker, 
-				args.dir_in, 
+				args.dir_in,
+				args.dir_out,
 				args.max_shard_size,
 				page): page for page in range(pages)}
 		for future in concurrent.futures.as_completed(future_to_item):

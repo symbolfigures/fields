@@ -14,7 +14,7 @@ Image.MAX_IMAGE_PIXELS = None
 
 def grid(args: argparse.Namespace):
 	stem = Path(args.dir_in).stem
-	dir_out = f'tfrecord/{stem}'
+	dir_out = f'grid/{stem}'
 	os.makedirs(dir_out, exist_ok=True)
 	rows = args.rows
 	cols = args.cols
@@ -82,10 +82,11 @@ def blob_worker(dir_in, dir_out, dpi, rw, cl, pixels, steps, page):
 	#columns = math.ceil((box_right - box_left) / step)
 
 	if dir_out is None:
-		dir_out = f'tile/{dir_in}'
+		stem = Path(dir_in).stem
+		dir_out = f'tile/{stem}'
 	for row in range(rows):
 		os.makedirs(f'{dir_out}/p{page:02}/r{row:03}', exist_ok=True)
-	img = Image.open(f'scan/{dir_in}/{page:02}.png')
+	img = Image.open(f'{dir_in}/{page:02}.png')
 	row = 0
 
 	# Iterate through every row and column.
@@ -296,7 +297,7 @@ def main():
 		'--dir_out',
 		type=str,
 		default=None,
-		help='Optional output folder. If not specified, output is placed in data/tile/.')
+		help='Optional output folder. If not specified, output is placed in tile/.')
 	blob_parser.add_argument(
 		'-s',
 		'--steps',

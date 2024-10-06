@@ -16,14 +16,14 @@ Enter `scan`, copy the originals, and rename them.
 
 ### 1. Prepare the drawing scans
 
+They need to be named `00.png`, `01.png`, ... for further processing.  
+`$ bash rename.sh web`
+
 If the images aren't in PNG format, convert them to PNG. Specify the folder at the end of the command.  
 `$ bash jpeg_to_png.sh web`
 
 If the images aren't grayscale, convert to grayscale. The drawings are colorless enough, and this will save resources during training.  
 `$ python rgb_to_gray.py web`
-
-They need to be named `01.png`, `02.png`, ... for further processing.  
-`$ bash rename.sh web`
 
 Exit `scan`  
 `$ cd ../`

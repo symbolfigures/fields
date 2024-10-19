@@ -5,7 +5,7 @@ Enter `data`.
 
 The network needs a lot of data to train on, and drawing can take a long time, so it's convenient if the scanned images can be cropped, flipped, or rotated. That way the network gets more data for the same price. Drawings that are very abstract are suitable in this regard; a region may be cropped, flipped, and rotated arbitrarily without losing value. For comparison, a portrait or still life can only be flipped horizontally, and cropped only to remove the background. The former kind I call a blob, and the latter a specimen.
 
-If you don't have your own media and want to follow along, you can download my own drawing scans, and then move them to the `data/scan/originals` folder and unzip. ([dilly_dpi300.zip (262 MB)](https://symbolfigures.io/thirdstudy/data/scan/originals/dilly_dpi300.zip)) ([web_dpi300.zip (1.5 GB)](https://symbolfigures.io/thirdstudy/data/scan/originals/web_dpi300.zip))
+If you don't have your own media and want to follow along, you can download my own drawing scans, and then move them to the `data/scan/originals` folder and unzip. ([dilly_dpi300.zip (262 MB)](https://symbolfigures.io/thirdstudy/data/scan/original/dilly_dpi300.zip)) ([web_dpi300.zip (1.5 GB)](https://symbolfigures.io/thirdstudy/data/scan/original/web_dpi300.zip))
 
 Web (a.k.a. Third Study) is a kind of blob, and dilly (a.k.a. Second Study) is a kind of specimen. Pick one, copy it to the `data` folder, and give it a unique name. In this walkthrough, we will default to `web` for operations required by both blobs and specimens.
 

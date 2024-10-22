@@ -50,7 +50,7 @@ def blob_worker(dir_in, dir_out, dpi, rw, cl, pixels, steps, page):
 	# The box is a 18 x 12 grid.
 	# Each square in the grid, or unit, is X pixels depending on Y dpi.
 	# 1 unit = 256 / 300 square inches.
-	unit = (dpi // 300) * 256
+	unit = int((dpi / 300) * 256)
 	box = [cl * unit, rw * unit]
 
 	# The scope is shifted by 1/{steps} units after each tile is cut.
@@ -293,18 +293,18 @@ def main():
 		'blob',
 		help='Cut tiles from a blob at random degrees of rotation.')
 	blob_parser.add_argument(
-		'-o',
-		'--dir_out',
-		type=str,
-		default=None,
-		help='Optional output folder. If not specified, output is placed in tile/.')
-	blob_parser.add_argument(
 		'-s',
 		'--steps',
 		type=int,
 		required=True,
 		help='Inverse of the distance that adjacent tiles are separated by.' +
 		'The more the steps, the more the tiles overlap. Value of 1 means they don\'t overlap.')
+	blob_parser.add_argument(
+		'-o',
+		'--dir_out',
+		type=str,
+		default=None,
+		help='Optional output folder. If not specified, output is placed in tile/.')
 	blob_parser.set_defaults(action=blob)
 
 	specimen_parser = subparsers.add_parser(

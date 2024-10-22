@@ -17,13 +17,7 @@ def load_generator(checkpoint_folder_path: os.PathLike, checkpoint_i):
 	training_state: TrainingState = pickle.loads(checkpointer.load_checkpoint(checkpoint_i))
 	return training_state.visualization_generator
 
-
-# as per B.K.
-# Normalize batch of vectors.
-def normalize(v, magnitude=1.0):
-    return v * magnitude / tf.sqrt(tf.reduce_sum(tf.square(v), axis=-1, keepdims=True))
-
-
+    
 def zigzag(
 		generator: tf.keras.Model,
 		args:argparse.Namespace):
@@ -35,7 +29,7 @@ def zigzag(
 	os.makedirs(dir_out, exist_ok=True)
 
 	noise_shape = generator.input_shape[-1]
-	noises = normalize(tf.random.normal((args.segments, noise_shape)))
+	noises = tf.random.normal((args.segments, noise_shape))
 	interp_path = []
 	for i in range(noises.shape[0] - 1):
 		segment = tf.linspace(noises[i], noises[i+1], args.frames)
@@ -43,7 +37,7 @@ def zigzag(
 	interp_path = tf.concat(interp_path, axis=0)
 
 	total_vectors = interp_path.shape[0]
-	batch_size = 64 # adjust according to GPU capacity
+	batch_size = 8 # adjust according to GPU capacity
 	prog_bar = tf.keras.utils.Progbar(total_vectors // batch_size)
 	images = []
 	for start in range(0, total_vectors, batch_size):
@@ -53,13 +47,15 @@ def zigzag(
 		prog_bar.add(1)
 		images.append(image_batch)
 	images = tf.concat(images, axis=0)
+	prog_bar = tf.keras.utils.Progbar(images.shape[0])
 	for image_i, image in enumerate(images):
 		file_path = os.path.join(dir_out, f'{image_i:06}.png')
 		image = tf.convert_to_tensor(image)
 		image = tf.image.convert_image_dtype(image, tf.uint8, saturate=True)
 		image = tf.io.encode_png(image).numpy()
 		with open(file_path, 'wb') as f:
-		    f.write(image)
+		        f.write(image)
+		prog_bar.add(1)
 
 
 def bezier_interpolation(p0, p1, p2, p3, p4, frames):
@@ -90,7 +86,7 @@ def bezier(
 	os.makedirs(dir_out, exist_ok=True)
 
 	noise_shape = generator.input_shape[-1]
-	noises = normalize(tf.random.normal((args.segments * 3, noise_shape)))
+	noises = tf.random.normal((args.segments * 3, noise_shape))
 	path = []
 	prog_bar = tf.keras.utils.Progbar(args.segments)
 	for i in range(args.segments):
@@ -102,7 +98,7 @@ def bezier(
 		path.extend(bezier_interpolation(p0, p1, p2, p3, p4, args.frames))
 		prog_bar.add(1)
 	#print(f'path shape: ({len(path)}, {len(path[0])})')
-	batch_size = 32 # according to GPU capacity
+	batch_size = 16 # according to GPU capacity
 	prog_bar = tf.keras.utils.Progbar(args.segments * args.frames // batch_size)
 	path = tf.convert_to_tensor(path)
 	#print(f'tf path shape: ', path.shape)
@@ -129,7 +125,7 @@ def main():
     parser = argparse.ArgumentParser()
 
     subparsers = parser.add_subparsers()
-
+    
     zigzag_parser = subparsers.add_parser(
         'zigzag',
         help='Pass through a set of randomly chosen points in the latent space. Each path between' +
@@ -165,7 +161,8 @@ def main():
         )
         subparser.add_argument(
             'dir_in',
-            help='Path to image generator folder. The folder must contain a .checkpoint file.')
+            help='Path to image generator folder. The folder must contain a .checkpoint file.'
+        )
 
     args = parser.parse_args()
 

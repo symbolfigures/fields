@@ -21,7 +21,7 @@ A 512-dimensional vector space may be conceptualized as a 3-dimensional vector s
 
 An initial thought is to select a set of random points in the vector space, and then make a path that passes through each one. Interpolation basically draws a straight line from one point to the next, so a series of random points will result in a zigzag sort of path, with sharp changes in direction at each point.
 
-Run `zigzag` in `generate_images.py`, passing in the number of segments and frames, and the path to the image generator checkpoint. It creates an output folder in anim/.  
+Run `zigzag` in `generate_images.py`, passing in the number of segments and frames, and the path to the image generator checkpoint. It creates an output folder in `anim/`.  
 `python generate_images.py zigzag --segments=16 --frames=256 \`  
     `../train/out/web_dpi300_px512_2024-09-27 \`
 
@@ -37,7 +37,7 @@ One can imagine a path that would pass through the same points, but without the 
 
 A Bezier curve constructs a path between two points, which is curved according to any number of control points in between. The control points can be moved around to change the shape of the curve, but the curve doesn't actually pass through them. We can use them to make the path from point to point less angular.
 
-Consider a path that passes from point *A* to point *B* to point *C*. Between *A* and *B* are two control points *C1* and *C2*, and between *B* and *C* are two control points *C3* and *C4*. Let the control points between *A* and *B* also be random, so the curve is random as well. *C3* can be carefully positioned so that the path doesn't turn at all when it passes through *B*. The way to do that is simply place it on the opposite side of *B* as *C2*.
+Consider a path that passes from point *X* to point *Y* to point *Z*. Between *X* and *Y* are two control points *C1* and *C2*, and between *Y* and *Z* are two control points *C3* and *C4*. Let the four control points also be random, so the segments curve randomly. Now *C3* can be carefully adjusted so that it's on the opposite side of *B* as *C2*, and the same distance away. This is how the path doesn't suddenly turn when it passes through *Y*.
 
 Now consider a path that passes through an endless series of points. For every segment between adjacent points, there are two control points. The first is determined to be opposite the second control point of the previous segment, while the second can be entirely random. More random control points can be added as well, just as long as the first one is placed with respect to the previous segment's last control point.
 

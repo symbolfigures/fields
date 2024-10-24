@@ -22,7 +22,7 @@ They need to be named `00.png`, `01.png`, ... for further processing.
 If the images aren't in PNG format, convert them to PNG. Specify the folder at the end of the command.  
 `$ bash jpeg_to_png.sh web`
 
-If the images are RGB, convert to grayscale. The drawings are colorless enough, and this will save resources during training. Bitmap (a.k.a. text, where the pixels are either black or white) should also be converted to grayscale to give white a value of 255 rather than 1.  
+If the images are RGB, convert to grayscale. The drawings are colorless enough, and this will save resources during training.
 `$ python rgb_to_gray.py web`
 
 Exit `scan`  

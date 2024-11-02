@@ -47,13 +47,19 @@ The `bezier` function has 3 control points for each segment. It connects the las
 
 ### 2. Process images
 
-The `invert` function in `process_images` inverts the grayscale values. It can also increase the lightness and convert to bitmap. To increase the lightness, pass in a new minimum value for the typical range (0, 255), and the values will be scaled up. To convert to bitmap, pass in the option `--bitmap`.
+The `invert` function in `process_images.py` inverts the grayscale values. It can also increase the lightness and convert to bitmap. To increase the lightness, pass in a new minimum value for the typical range (0, 255), and the values will be scaled up. To convert to bitmap, pass in the option `--bitmap`.
 
 Pass in the image folder within `anim/`. Update the Unix time as needed.  
 `python process_images.py --min_value=32 \`  
 	`out/web_dpi300_px512_2024-09-27/bezier_s256_f512/1727626184`
 
 Modified images are copied to a new output folder with `_c` appended to the name.
+
+Alternatively, `fill.py` fills in shapes with colors randomly sampled from some image `pallet.jpg` which must be included in the CWD. This only works out if the drawing is a web of shapes, which converts nicely to black and white. It's incomatible with `bezier` and `zigzag` since images are colored with no relation to each other.
+
+First the shapes are each filled  with a color from the pallette, and then the lines are filled in. Just pass in the image directory, and an optional output directory if you don't want the files overwritten.
+`python fill.py /m2_2/random_1024_0/1727626184`
+    `--dir-out=/m2_3/random_1024_0/1727626184`
 
 ### 3. Render the video
 

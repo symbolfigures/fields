@@ -45,6 +45,14 @@ The `bezier` function has 3 control points for each segment. It connects the las
 `python generate_images.py bezier --segments=16 --frames=512 \`  
     `../train/out/web_dpi300_px512_2024-09-27 \`
 
+#### 1.2 Random
+
+Generate a batch of random images that are not in any sequence. Useful for producing synthetic data for a new model that trains on processed images.
+
+Enter the number of images to generate and the input directory. Include a set number to help track sepatate batches.
+python generate_images.py random --count=1024 --set_no=0 \
+	../train/out/web_dpi300_px1024_2024-10-02
+
 ### 2. Process images
 
 The `invert` function in `process_images.py` inverts the grayscale values. It can also increase the lightness and convert to bitmap. To increase the lightness, pass in a new minimum value for the typical range (0, 255), and the values will be scaled up. To convert to bitmap, pass in the option `--bitmap`.
@@ -57,8 +65,8 @@ Modified images are copied to a new output folder with `_c` appended to the name
 
 Alternatively, `fill.py` fills in shapes with colors randomly sampled from some image `pallet.jpg` which must be included in the CWD. This only works out if the drawing is a web of shapes, which converts nicely to black and white. It's incomatible with `bezier` and `zigzag` since images are colored with no relation to each other.
 
-First the shapes are each filled  with a color from the pallette, and then the lines are filled in. Just pass in the image directory, and an optional output directory if you don't want the files overwritten.
-`python fill.py /m2_2/random_1024_0/1727626184`
+First the shapes are each filled  with a color from the pallette, and then the lines are filled in. Just pass in the image directory, and an optional output directory if you don't want the files overwritten.  
+`python fill.py /m2_2/random_1024_0/1727626184`  
     `--dir-out=/m2_3/random_1024_0/1727626184`
 
 ### 3. Render the video

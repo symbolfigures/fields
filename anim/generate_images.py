@@ -17,7 +17,44 @@ def load_generator(checkpoint_folder_path: os.PathLike, checkpoint_i):
 	training_state: TrainingState = pickle.loads(checkpointer.load_checkpoint(checkpoint_i))
 	return training_state.visualization_generator
 
-    
+
+def random(
+  		generator: tf.keras.Model,
+		args:argparse.Namespace):
+	img_gen = Path(args.dir_in).stem
+	img_type = f'random_{args.count}'
+	if args.checkpoint is not None:
+		img_type = f'{img_type}_c{args.checkpoint}'
+	if args.set_no is not None:
+		img_type = f'{img_type}_{args.set_no}'
+	dir_out = os.path.join('out', img_gen, img_type, f'{int(time.time())}')
+	if args.dir_out is not None:
+		dir_out = os.path.join(args.dir_out, img_type, f'{int(time.time())}')
+	os.makedirs(dir_out, exist_ok=True)
+	noise_shape = generator.input_shape[-1]
+	noises = tf.random.normal((args.count, noise_shape))
+	total_vectors = noises.shape[0]
+	batch_size = 4 # adjust according to GPU capacity
+	prog_bar = tf.keras.utils.Progbar(total_vectors // batch_size)
+	images = []
+	for start in range(0, total_vectors, batch_size):
+		end = start + batch_size
+		batch = noises[start:end]
+		image_batch = generator(batch)
+		prog_bar.add(1)
+		images.append(image_batch)
+	images = tf.concat(images, axis=0)
+	prog_bar = tf.keras.utils.Progbar(images.shape[0])
+	for image_i, image in enumerate(images):
+		file_path = os.path.join(dir_out, f'{image_i:06}.png')
+		image = tf.convert_to_tensor(image)
+		image = tf.image.convert_image_dtype(image, tf.uint8, saturate=True)
+		image = tf.io.encode_png(image).numpy()
+		with open(file_path, 'wb') as f:
+			    f.write(image)
+		prog_bar.add(1)
+
+  
 def zigzag(
 		generator: tf.keras.Model,
 		args:argparse.Namespace):
@@ -122,52 +159,79 @@ def bezier(
 
 def main():
 
-    parser = argparse.ArgumentParser()
+	parser = argparse.ArgumentParser()
 
-    subparsers = parser.add_subparsers()
-    
-    zigzag_parser = subparsers.add_parser(
-        'zigzag',
-        help='Pass through a set of randomly chosen points in the latent space. Each path between' +
-             'adjacent points is straight.')
-    zigzag_parser.set_defaults(action=zigzag)
+	subparsers = parser.add_subparsers()
 
-    bezier_parser = subparsers.add_parser(
-        'bezier',
-        help='Pass through a set of randomly chosen points in the latent space along a curved path.')
-    bezier_parser.set_defaults(action=bezier)
+	random_parser = subparsers.add_parser(
+		'random',
+		help='Set of random images.')
+	random_parser.add_argument(
+		'-c',
+		'--count',
+		type=int,
+		default=100,
+		help='Number of random images to generate.'
+	)
+	random_parser.add_argument(
+		'-s',
+		'--set_no',
+		type=int,
+		default=None,
+		help='Include a set number to track batches of images.'
+	)
+	parser.add_argument(
+		'-o',
+		'--dir_out',
+		default=None,
+		help='Optional output folder.'
+	)
+	random_parser.set_defaults(action=random)
 
-    for subparser in [zigzag_parser, bezier_parser]:
-        subparser.add_argument(
-            '-s',
-            '--segments',
-            type=int,
-            default=32,
-            help='Number of points in the vector space to pass through.'
-        )
-        subparser.add_argument(
-            '-f',
-            '--frames',
-            type=int,
-            default=256,
-            help='Number of frames per segment.'
-        )
-        subparser.add_argument(
-            '-c',
-            '--checkpoint',
-            type=int,
-            default=None,
-            help='Checkpoint within dir_in. Defaults to highest value.'
-        )
-        subparser.add_argument(
-            'dir_in',
-            help='Path to image generator folder. The folder must contain a .checkpoint file.'
-        )
+	zigzag_parser = subparsers.add_parser(
+		'zigzag',
+		help='Pass through a set of randomly chosen points in the latent space. Each path between' +
+		     'adjacent points is straight.')
+	zigzag_parser.set_defaults(action=zigzag)
 
-    args = parser.parse_args()
+	bezier_parser = subparsers.add_parser(
+		'bezier',
+		help='Pass through a set of randomly chosen points in the latent space along a curved path.')
+	bezier_parser.set_defaults(action=bezier)
 
-    generator = load_generator(args.dir_in, args.checkpoint)
-    args.action(generator, args)
+	for subparser in [zigzag_parser, bezier_parser]:
+		subparser.add_argument(
+			'-s',
+			'--segments',
+			type=int,
+			default=32,
+			help='Number of points in the vector space to pass through.'
+		)
+		subparser.add_argument(
+			'-f',
+			'--frames',
+			type=int,
+			default=256,
+			help='Number of frames per segment.'
+		)
+
+	for subparser in [random_parser, zigzag_parser, bezier_parser]:
+		subparser.add_argument(
+			'-ch',
+			'--checkpoint',
+			type=int,
+			default=None,
+			help='Checkpoint within dir_in. Defaults to highest value.'
+		)
+		subparser.add_argument(
+			'dir_in',
+			help='Path to image generator folder. The folder must contain a .checkpoint file.'
+		)
+
+	args = parser.parse_args()
+
+	generator = load_generator(args.dir_in, args.checkpoint)
+	args.action(generator, args)
 
 
 if __name__ == '__main__':

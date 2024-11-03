@@ -14,27 +14,24 @@ def get_colors():
 	colors = []
 	for x in range(img.width):	
 		for y in range(img.height):
-	#for x in range(20):	
-		#for y in range(20):
 			colors.append(img.getpixel((x, y)))
 	return colors
 
 colors = get_colors()
 
 
-def bitmap(img):
+def bitmap(img, threshold):
 	img.convert('L')
 	array = np.array(img)
-	threshold = 160#128
 	array = np.where(array > threshold, 255, 0).astype(np.uint8)
 	return Image.fromarray(array.astype(np.uint8))
 
 
 def fill(args):
-	dir_in, dir_out, blend, lines, file = args
+	dir_in, dir_out, threshold, blend, lines, file = args
 	file_path = os.path.join(dir_in, file)
 	img = Image.open(file_path)
-	img = bitmap(img)
+	img = bitmap(img, threshold)
 	img = img.convert('RGB')
 	draw = ImageDraw.Draw(img)
 	pix = []
@@ -140,7 +137,7 @@ def process(args: argparse.Namespace):
 	files = os.listdir(args.dir_in)
 	if args.dir_out is not None:
 		os.makedirs(args.dir_out, exist_ok=True)
-	args_list = [(args.dir_in, args.dir_out, args.blend, args.lines, file) for file in files]
+	args_list = [(args.dir_in, args.dir_out, args.threshold, args.blend, args.lines, file) for file in files]
 	#max_workers = os.cpu_count() - int(os.getloadavg()[0])
 	with ProcessPoolExecutor(max_workers=32) as executor:
 		executor.map(fill, args_list)
@@ -160,6 +157,12 @@ def main():
 		'--dir_out',
 		default=None,
 		help='Output folder. If not specified, source images will be edited in place.')
+	parser.add_argument(
+		'-t',
+		'--threshold',
+		type=int,
+		default=160,
+		help='Grayscale value (0-255) determines threshold between black and white.')
 	parser.add_argument(
 		'-b',
 		'--blend',

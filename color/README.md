@@ -13,8 +13,8 @@ There are three steps:
 2. The lines are filled with color.  
 3. Edges between shapes are blended slightly.
 
-Pass in the image directory, and an optional output directory if you don't want the files overwritten. `--lines` and `--blend` are optional.  
-`python fill.py input_folder --dir_out=output_folder --lines --blend`
+Pass in the image directory, and an optional output directory if you don't want the files overwritten. `--lines` and `--blend` are optional. `--threshold` sets the grayscale value (0-255) which divides black from white.  
+`python fill.py input_folder --dir_out=output_folder --threshold=160 --lines --blend`
 
 Blend takes a long time, and `blend_gpu.py` can be used instead. It's about 200 times faster and requires a GPU. Pass in the `dir_in`, which must contain only .png images. Include an optional `dir_out` folder, or else the files are overwritten. `batch_size` and `block_length` may be adjusted to GPU specifications.  
 `python blend_gpu.py input_folder --dir_out=output_folder`

@@ -31,7 +31,7 @@ def bitmap(img):
 
 
 def fill(args):
-	dir_in, dir_out, blend, file = args
+	dir_in, dir_out, blend, lines, file = args
 	file_path = os.path.join(dir_in, file)
 	img = Image.open(file_path)
 	img = bitmap(img)
@@ -92,11 +92,12 @@ def fill(args):
 						draw.point((x, y), fill=color)
 						return
 
-	for x in range(img.width):
-		for y in range(img.height):
-			color = img.getpixel((x, y))
-			if color == (0, 0, 0):
-				fill_line(x, y)
+	if lines:
+		for x in range(img.width):
+			for y in range(img.height):
+				color = img.getpixel((x, y))
+				if color == (0, 0, 0):
+					fill_line(x, y)
 
 	# BLEND -----------------------------------------
 
@@ -139,7 +140,7 @@ def process(args: argparse.Namespace):
 	files = os.listdir(args.dir_in)
 	if args.dir_out is not None:
 		os.makedirs(args.dir_out, exist_ok=True)
-	args_list = [(args.dir_in, args.dir_out, args.blend, file) for file in files]
+	args_list = [(args.dir_in, args.dir_out, args.blend, args.lines, file) for file in files]
 	#max_workers = os.cpu_count() - int(os.getloadavg()[0])
 	with ProcessPoolExecutor(max_workers=32) as executor:
 		executor.map(fill, args_list)
@@ -165,6 +166,12 @@ def main():
 		action='store_true',
 		default=None,
 		help='Soften edges between shapes. This takes a long time.')
+	parser.add_argument(
+		'-l',
+		'--lines',
+		action='store_true',
+		default=None,
+		help='Fill lines with nearest color.')
 	parser.set_defaults(action=process)
 
 	args = parser.parse_args()

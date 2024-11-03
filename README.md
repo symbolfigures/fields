@@ -30,10 +30,11 @@ Create a virtual environment, and install the required packages.
 `$ source .venv/bin/activate`  
 `$ pip install -r requirements.txt`
 
-There are three folders that need to be in place for the code to work:  
+There are four folders that comprise the pipeline:  
 `/data` - Original drawing scans, processed images, and final dataset.  
 `/train` - The trained neural network, which is referenced by the image generator.  
-`/anim` - Generated images and animations.
+`/anim` - Generated images and animations.  
+`/color` - Color images.
 
 ## 1. Create the dataset
 
@@ -46,6 +47,10 @@ See [`train`](train)
 ## 3. Create the animation
 
 See [`anim`](anim)
+
+## 4. Color images
+
+See [`color`](color)
 
 
 

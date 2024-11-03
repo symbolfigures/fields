@@ -180,7 +180,7 @@ def main():
 		default=None,
 		help='Include a set number to track batches of images.'
 	)
-	parser.add_argument(
+	random_parser.add_argument(
 		'-o',
 		'--dir_out',
 		default=None,

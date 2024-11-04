@@ -20,18 +20,18 @@ def get_colors():
 colors = get_colors()
 
 
-def bitmap(img, threshold):
+def bitmap(img):
 	img.convert('L')
 	array = np.array(img)
-	array = np.where(array > threshold, 255, 0).astype(np.uint8)
+	array = np.where(array > 160, 255, 0).astype(np.uint8)
 	return Image.fromarray(array.astype(np.uint8))
 
 
 def fill(args):
-	dir_in, dir_out, threshold, blend, lines, file = args
+	dir_in, dir_out, file = args
 	file_path = os.path.join(dir_in, file)
 	img = Image.open(file_path)
-	img = bitmap(img, threshold)
+	img = bitmap(img)
 	img = img.convert('RGB')
 	draw = ImageDraw.Draw(img)
 	pix = []
@@ -89,42 +89,11 @@ def fill(args):
 						draw.point((x, y), fill=color)
 						return
 
-	if lines:
-		for x in range(img.width):
-			for y in range(img.height):
-				color = img.getpixel((x, y))
-				if color == (0, 0, 0):
-					fill_line(x, y)
-
-	# BLEND -----------------------------------------
-
-	def blend(x, y):
-		count = 0
-		color = img.getpixel((x, y))
-		dif_colors = []
-
-		if x > 0 and img.getpixel((x-1, y)) != color:
-			count += 1
-			dif_colors.append(img.getpixel((x-1, y)))
-		if x < img.width - 1 and img.getpixel((x+1, y)) != color:
-			count += 1
-			dif_colors.append(img.getpixel((x+1, y)))
-		if y > 0 and img.getpixel((x, y-1)) != color:
-			count += 1
-			dif_colors.append(img.getpixel((x, y-1)))
-		if y < img.height - 1 and img.getpixel((x, y+1)) != color:
-			count += 1
-			dif_colors.append(img.getpixel((x, y+1)))
-
-		if not dif_colors:
-			return color
-		admixture = tuple(sum(x) / len(x) for x in zip(*dif_colors))
-		return tuple(int((2 * clr + adm) / 3) for clr, adm in zip(color, admixture))
-
-	if blend:
-		for x in range(img.width):
-			for y in range(img.height):
-				draw.point((x, y), fill=blend(x, y))
+	for x in range(img.width):
+		for y in range(img.height):
+			color = img.getpixel((x, y))
+			if color == (0, 0, 0):
+				fill_line(x, y)
 
 	# SAVE -----------------------------------------
 	if dir_out is not None:
@@ -137,9 +106,9 @@ def process(args: argparse.Namespace):
 	files = os.listdir(args.dir_in)
 	if args.dir_out is not None:
 		os.makedirs(args.dir_out, exist_ok=True)
-	args_list = [(args.dir_in, args.dir_out, args.threshold, args.blend, args.lines, file) for file in files]
+	args_list = [(args.dir_in, args.dir_out, file) for file in files]
 	#max_workers = os.cpu_count() - int(os.getloadavg()[0])
-	with ProcessPoolExecutor(max_workers=32) as executor:
+	with ProcessPoolExecutor() as executor:
 		executor.map(fill, args_list)
 
 	print(time() - t1)
@@ -157,24 +126,6 @@ def main():
 		'--dir_out',
 		default=None,
 		help='Output folder. If not specified, source images will be edited in place.')
-	parser.add_argument(
-		'-t',
-		'--threshold',
-		type=int,
-		default=160,
-		help='Grayscale value (0-255) determines threshold between black and white.')
-	parser.add_argument(
-		'-b',
-		'--blend',
-		action='store_true',
-		default=None,
-		help='Soften edges between shapes. This takes a long time.')
-	parser.add_argument(
-		'-l',
-		'--lines',
-		action='store_true',
-		default=None,
-		help='Fill lines with nearest color.')
 	parser.set_defaults(action=process)
 
 	args = parser.parse_args()

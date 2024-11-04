@@ -8,15 +8,16 @@ They are not directly compatible with animation, since individual images are col
 
 `fill.py` fills in shapes with colors randomly sampled from some image `pallet.jpg`.
 
-There are three steps:  
+There are two steps:  
 1. Continous white spaces are filled with a color randomly selected from the pallette.  
-2. The lines are filled with color.  
-3. Edges between shapes are blended slightly.
+2. The lines are filled with color.
 
-Pass in the image directory, and an optional output directory if you don't want the files overwritten. `--lines` and `--blend` are optional. `--threshold` sets the grayscale value (0-255) which divides black from white.  
-`python fill.py input_folder --dir_out=output_folder --threshold=160 --lines --blend`
+Pass in the image directory, and an optional output directory if you don't want the files overwritten.  
+`python fill.py input_folder --dir_out=output_folder`
 
-Blend takes a long time, and `blend_gpu.py` can be used instead. It's about 200 times faster and requires a GPU. Pass in the `dir_in`, which must contain only .png images. Include an optional `dir_out` folder, or else the files are overwritten. `batch_size` and `block_length` may be adjusted to GPU specifications.  
+### Blend
+
+`blend_gpu.py` makes the edges of the shapes more smooth by blending the colors. It requires a GPU. Pass in the `dir_in`, which must contain only .png images. Include an optional `dir_out` folder, or else the files are overwritten. `batch_size` and `block_length` may be adjusted to GPU specifications.  
 `python blend_gpu.py input_folder --dir_out=output_folder`
 
 Try reducing `batch_size` if you get `illegal memory access was encountered` errors.

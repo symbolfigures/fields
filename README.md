@@ -1,12 +1,13 @@
-# Third Study Animation
+# Fields
 
-This repository is a pipeline that takes scans of drawings and produces animations from them.
+This repository is a set of scripts that prepares scanned drawings as a dataset for deep learning. A succesfully trained model can then produce immitations of those drawings and even produce animations from them by transforming within its own latent space of potential images.
 
-1. Drawings are scanned into the computer and processed into a dataset.
-2. A generative adversarial network (GAN) trains on this dataset and yields a vector space of potential, immitation images.
-3. Animations are produced by generating images along continuous paths within the vector space.
+1. Drawings are scanned into the computer and processed into a dataset.  
+2. A deep learning model with a generative adversarial network (GAN) architecture trains on this dataset and yields a vector space of potential, immitation images.  
+3. The model generates images. A set of images may also be related, such as in a sequence that produces an animation.  
+4. The images can be colored for a new dataset and model.
 
-The code for step 2 is provided in [Brad Klingensmith's course on Udemy](https://www.udemy.com/course/high-resolution-generative-adversarial-networks). That code is in turn based on the [ProGAN](https://arxiv.org/abs/1710.10196), [StyleGAN](https://arxiv.org/abs/1812.04948), and [StyleGAN2](https://arxiv.org/abs/1912.04958) papers. Links to some of my own drawing scans and a pre-trained generator are provided below, but the code from the course will still be needed to generate images.
+The code for step 2 is provided in [Brad Klingensmith's course on Udemy](https://www.udemy.com/course/high-resolution-generative-adversarial-networks). That code is in turn based on the [ProGAN](https://arxiv.org/abs/1710.10196), [StyleGAN](https://arxiv.org/abs/1812.04948), and [StyleGAN2](https://arxiv.org/abs/1912.04958) papers.
 
 The following is a step by step walkthrough on a Linux operating system. It assumes some familiarity with a command line interface.
 
@@ -31,10 +32,10 @@ Create a virtual environment, and install the required packages.
 `$ pip install -r requirements.txt`
 
 There are four folders that comprise the pipeline:  
-`/data` - Original drawing scans, processed images, and final dataset.  
-`/train` - The trained neural network, which is referenced by the image generator.  
-`/anim` - Generated images and animations.  
-`/color` - Color images.
+`/data` - Prepare a dataset from scanned drawings.  
+`/train` - Train the model that can generate images.  
+`/anim` - Use the model to generate images and animations.  
+`/color` - Further process the images for a new dataset.
 
 ## 1. Create the dataset
 
@@ -44,7 +45,7 @@ See [`data`](data)
 
 See [`train`](train)
 
-## 3. Create the animation
+## 3. Generate images
 
 See [`anim`](anim)
 

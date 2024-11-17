@@ -1,4 +1,4 @@
-## Create the animation
+## Generate images
 
 First, we pass a series of vectors to the image generator, and for every vector it returns an image. If training went well, every image will appear like any other real image from the tiles created earlier. After that, the images are processed for whatever purpose, and finally they are rendered into one video file.
 
@@ -45,13 +45,15 @@ The `bezier` function has 3 control points for each segment. It connects the las
 `python generate_images.py bezier --segments=16 --frames=512 \`  
     `../train/out/web_dpi300_px512_2024-09-27 \`
 
-#### 1.2 Random
+#### 1.3 Random
 
-Generate a batch of random images that are not in any sequence. Enter the number of images to generate and the input directory. Include a set number to help track sepatate batches.
-python generate_images.py random --count=1024 --set_no=0 \
-	../train/out/web_dpi300_px1024_2024-10-02
+Generate a batch of random images that are not in any sequence. Enter the number of images to generate and the input directory. Include a set number to help track sepatate batches.  
+`python generate_images.py random --count=1024 --set_no=0 \`  
+	`../train/out/web_dpi300_px1024_2024-10-02`
 
-### 2. Process images
+### 2. Animate
+
+#### 2.1 Process Images
 
 The `invert` function in `process_images.py` inverts the grayscale values. It can also increase the lightness and convert to bitmap. To increase the lightness, pass in a new minimum value for the typical range (0, 255), and the values will be scaled up. To convert to bitmap, pass in the option `--bitmap`.
 
@@ -60,7 +62,7 @@ Pass in the input folder and optional `--min_value.`
 
 Modified images are copied to a new output folder with `_c` appended to the name.
 
-### 3. Render the video
+#### 2.2. Render the video
 
 Use `ffmpeg` to turn a folder full of images into a video. This command converts to mp4 with H.264 codec, and includes `pix_fmt` for mobile compatibility.  
 `ffmpeg \`  

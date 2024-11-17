@@ -16,14 +16,14 @@ There are two steps:
 2. The lines are filled with color.
 
 Pass in the image directory, and an optional output directory if you don't want the files overwritten.  
-`python fill.py input_dir --dir_out=filled_dir`
+`python fill.py <input_dir> --dir_out=<filled_dir>`
 
 python fill.py input --dir_out=output
 
 ### Blend
 
 `blend_gpu.py` makes the edges of the shapes more smooth by blending the colors. It requires a GPU. Pass in the `dir_in`, which must contain only .png images. Include an optional `dir_out` folder, or else the files are overwritten. `batch_size` and `block_length` may be adjusted to GPU specifications.  
-`python blend_gpu.py filled_dir --dir_out=blended_dir`
+`python blend_gpu.py <filled_dir> --dir_out=<blended_dir>`
 
 python blend_gpu.py colored --dir_out=blended
 

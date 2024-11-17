@@ -16,7 +16,7 @@ Put your drawing scans in a folder, and put the folder in `data/scan/original`. 
 They need to be named `00.png`, `01.png`, ... for further processing.  
 `$ bash rename.sh blobs`
 
-If the images aren't in PNG format, convert them to PNG. Specify the folder at the end of the command.  
+If the images aren't already in PNG format, convert them to PNG. Specify the folder at the end of the command. This requires ImageMagick.  
 `$ bash jpeg_to_png.sh blobs`
 
 If the images are RGB, convert to grayscale.

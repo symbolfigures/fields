@@ -2,7 +2,7 @@
 
 The interested user can enroll in the course mentioned to access the machine learning code.
 
-For those that have the code and want to try out the animation, you can download this pre-trained image generator ([256.checkpoint](https://symbolfigures.io/thirdstudy/train/out/web_dpi300_px512_2024-09-27/256.checkpoint)) and place it in `train/out/web_dpi300_px512_2024-09-27/`
+For those that have it and want to generate images, you can download this blob model ([256.checkpoint](https://symbolfigures.io/thirdstudy/web_dpi300_px512_2024-09-27/256.checkpoint)) and place it in `train/out/web_dpi300_px512_2024-09-27/`
 
 ### 1. Debug
 
@@ -21,4 +21,4 @@ The model assumes the images are RGB, which have 3 channels. Grayscale images ha
 `rgb = conv_2d(x, 3, 1, activation=None, name=f'to_rgb_{resolution}x{resolution}')`  
 `image = tf.keras.layers.Input((input_resolution, input_resolution, 3))`
 
-For the drawings in this repository, training 512x512 px images required a total sample count of 2^21 to produce decent images. After 2^22 sample counts, the images looked the same, but the animations greatly improved. That is still about a quarter of the count suggested in the lectures.
+In my experience, training 512x512 px images required a total sample count of 2^21 to produce decent images. After 2^22 sample counts, the images looked the same, but the animations greatly improved. That is still about a quarter of the count suggested in the lectures.

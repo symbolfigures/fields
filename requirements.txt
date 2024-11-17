@@ -1,8 +1,7 @@
 imageio
 numpy
+nvidia-cublas-cu12
 pillow
+pycuda
 tensorflow
 tf_keras
-nvidia-pyindex
-nvidia-cuda-runtime-cu12
-nvidia-cudnn-cu12

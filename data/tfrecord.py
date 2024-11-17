@@ -68,14 +68,13 @@ def tfrecord(args: argparse.Namespace):
 		dir_out = args.dir_out
 	os.makedirs(dir_out, exist_ok=True)
 	pages = len(os.listdir(args.dir_in))
-	max_workers = os.cpu_count() - math.ceil(os.getloadavg()[0])
 
-	with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
+	with concurrent.futures.ProcessPoolExecutor() as executor:
 		future_to_item = {
 			executor.submit(
 				tfrecord_worker, 
 				args.dir_in,
-				args.dir_out,
+				dir_out,
 				args.max_shard_size,
 				page): page for page in range(pages)}
 		for future in concurrent.futures.as_completed(future_to_item):

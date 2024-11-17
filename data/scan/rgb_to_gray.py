@@ -21,8 +21,7 @@ def main():
 	dir_in = sys.argv[1]
 	pages = len(os.listdir(dir_in))
 
-	max_workers = os.cpu_count() - math.ceil(os.getloadavg()[0])
-	with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
+	with concurrent.futures.ProcessPoolExecutor() as executor:
 		future_to_item = {
 			executor.submit(
 				worker,

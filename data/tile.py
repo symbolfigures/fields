@@ -249,12 +249,9 @@ def rotateflip_worker(dir_in, page):
 
 
 def rotateflip(args: argparse.Namespace):
-	assert Path(args.dir_in).parent is tile, 'For rotateflip, dir_in must be a folder within tile/.'
-	pages = len(os.listdir(f'args.dir_in'))
-	# CPU cores share the workload. Each core gets its own page to process.
-	# max_workers is the CPU's total logical cores minus the average load.
-	max_workers = os.cpu_count() - math.ceil(os.getloadavg()[0])
-	with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers) as executor:
+	#assert Path(args.dir_in).parent is tile, 'For rotateflip, dir_in must be a folder within tile/.'
+	pages = len(os.listdir(args.dir_in))
+	with concurrent.futures.ProcessPoolExecutor() as executor:
 		future_to_item = {
 			executor.submit(
 				rotateflip_worker,

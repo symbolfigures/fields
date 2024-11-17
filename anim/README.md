@@ -2,10 +2,10 @@
 
 First, we pass a series of vectors to the image generator, and for every vector it returns an image. If training went well, every image will appear like any other real image from the tiles created earlier. After that, the images are processed for whatever purpose, and finally they are rendered into one video file.
 
-### 1. Generate images
-
 Enter `anim`.  
 `$ cd anim`
+
+### 1. Generate images
 
 `generate_images.py` generates the images. It's like `main_generate_images.py` from the lectures, but with my own `zigzag` and `bezier` functions. It still depends on the other scripts from the lectures to enable the image generator.
 
@@ -22,8 +22,8 @@ A 512-dimensional vector space may be conceptualized as a 3-dimensional vector s
 An initial thought is to select a set of random points in the vector space, and then make a path that passes through each one. Interpolation basically draws a straight line from one point to the next, so a series of random points will result in a zigzag sort of path, with sharp changes in direction at each point.
 
 Run `zigzag` in `generate_images.py`, passing in the number of segments and frames, and the path to the image generator checkpoint. It creates an output folder in `anim/`.  
-`python generate_images.py zigzag --segments=16 --frames=256 \`  
-    `../train/out/web_dpi300_px512_2024-09-27 \`
+`python generate_images.py zigzag --segments=8 --frames=64 \`  
+    `../train/out/web_dpi300_px512_2024-09-27`
 
 Enter an optional parameter `--checkpoint` to specify the image generator checkpoint, otherwise the highest value is used.
 
@@ -42,14 +42,14 @@ Consider a path that passes from point *X* to point *Y* to point *Z*. Between *X
 Now consider a path that passes through an endless series of points. For every segment between adjacent points, there are two control points. The first is determined to be opposite the second control point of the previous segment, while the second can be entirely random. More random control points can be added as well, just as long as the first one is placed with respect to the previous segment's last control point.
 
 The `bezier` function has 3 control points for each segment. It connects the last segment back to the first, so the final series of images is a loop.  
-`python generate_images.py bezier --segments=16 --frames=512 \`  
+`python generate_images.py bezier --segments=8 --frames=64 \`  
     `../train/out/web_dpi300_px512_2024-09-27 \`
 
 #### 1.3 Random
 
 Generate a batch of random images that are not in any sequence. Enter the number of images to generate and the input directory. Include a set number to help track sepatate batches.  
-`python generate_images.py random --count=1024 --set_no=0 \`  
-	`../train/out/web_dpi300_px1024_2024-10-02`
+`python generate_images.py random --count=128 --set_no=0 \`  
+    `../train/out/web_dpi300_px512_2024-09-27`
 
 ### 2. Animate
 
@@ -57,8 +57,10 @@ Generate a batch of random images that are not in any sequence. Enter the number
 
 The `invert` function in `process_images.py` inverts the grayscale values. It can also increase the lightness and convert to bitmap. To increase the lightness, pass in a new minimum value for the typical range (0, 255), and the values will be scaled up. To convert to bitmap, pass in the option `--bitmap`.
 
-Pass in the input folder and optional `--min_value.`  
-`python process_images.py input_folder --min_value=32`
+Pass in the input folder and optional `--min_value`. (Replace with your own input folder.)  
+`python process_images.py --min_value=32 <input folder path>`
+
+python process_images.py --min_value=32 out/web_dpi300_px512_2024-09-27/bezier_s4_f32/1731828391
 
 Modified images are copied to a new output folder with `_c` appended to the name.
 
@@ -67,10 +69,10 @@ Modified images are copied to a new output folder with `_c` appended to the name
 Use `ffmpeg` to turn a folder full of images into a video. This command converts to mp4 with H.264 codec, and includes `pix_fmt` for mobile compatibility.  
 `ffmpeg \`  
 	`-framerate 30 \`  
-	`-i out/web_dpi300_px512_2024-09-27/bezier_s256_f512/1727626184_c/%06d.png \`  
+	`-i <input folder path>/%06d.png \`  
 	`-c:v libx264 \`  
 	`-pix_fmt yuv420p \`  
-	`out/web_dpi300_px512_2024-09-27/bezier_s256_f512/1727626184_c.mp4`
+	`<output file path>.mp4`
 
 Exit `anim`  
 `$ cd ../`

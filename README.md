@@ -16,8 +16,17 @@ The following is a step by step walkthrough on a Linux operating system. It assu
 - Python 3.12
 - Code from the course above
 - Other Python libraries listed in `requirements.txt`
+- venv
+- pip
 - bash
-- ffmpeg
+
+`freeze.txt` is `requirements.txt` but with all dependencies and versions.
+
+Optionally:
+- ffmpeg to create animations
+- ImageMagick to convert from JPEG to PNG
+- Code from the course to train a model or generate images
+- A NVIDIA GPU
 
 ### ii. Setup
 

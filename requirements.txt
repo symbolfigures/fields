@@ -3,5 +3,5 @@ numpy
 nvidia-cublas-cu12
 pillow
 pycuda
-tensorflow
+tensorflow[and-cuda]
 tf_keras

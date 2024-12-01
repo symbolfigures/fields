@@ -1,4 +1,4 @@
-## Introduction
+## Setup
 
 Here is what you need to get started.
 

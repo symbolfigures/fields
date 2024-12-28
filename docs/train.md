@@ -2,8 +2,6 @@
 
 The interested user can enroll in the course mentioned to access the machine learning code.
 
-For those that have it and want to generate images, you can download this blob model [256.checkpoint](https://symbolfigures.io/thirdstudy/web_dpi300_px512_2024-09-27/256.checkpoint)(319 MB) and place it in `train/out/web_dpi300_px512_2024-09-27/`
-
 ### 1. Debug
 
 For those that have the code and want to use it for training:
